@@ -1,0 +1,65 @@
+openapi: 3.0.3
+info:
+  title: Web Pencari Sumber Berita API
+  version: 1.0.0
+  description: API konseptual untuk ekstraksi teks citra dan penelusuran sumber berita.
+
+paths:
+  /api/search-source:
+    post:
+      summary: Menelusuri sumber berita dari citra
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - image
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Hasil pencarian sumber
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        '400':
+          description: Input tidak valid
+        '500':
+          description: Kesalahan server
+
+components:
+  schemas:
+    SearchResult:
+      type: object
+      properties:
+        source:
+          type: string
+        title:
+          type: string
+        url:
+          type: string
+        published_at:
+          type: string
+          nullable: true
+        similarity:
+          type: number
+          format: float
+
+    SearchResponse:
+      type: object
+      properties:
+        ocr_text:
+          type: string
+        keywords:
+          type: array
+          items:
+            type: string
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchResult'
